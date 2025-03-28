@@ -29,58 +29,6 @@ SwissInsure is a comprehensive, secure, and scalable MVP designed specifically f
 - Disciplined Git Flow methodology
 - Proactive alerting with Prometheus and Alertmanager
 
-## Infrastructure Diagram
-
-```mermaid
-flowchart TD
-    A[Google Cloud Platform - Zurich Region] --> B[Kubernetes Cluster]
-    
-    subgraph "CI/CD Pipeline"
-    J1[Git Repository] --> J2[Build & Test]
-    J2 --> J3[Docker Image Creation]
-    J3 --> J4[Image Registry]
-    J4 --> J5[Deployment to K8s]
-    end
-    
-    subgraph "Kubernetes Orchestration"
-    B --> C[Ingress/Load Balancer]
-    
-    subgraph "Containerized Microservices"
-    C --> D[Next.js Web Portal Pod]
-    C --> E[React Native API Services Pod]
-    C --> F[Spring Boot Dashboard Pod]
-    C --> G[Next.js Monitoring Pod]
-    
-    D --> D1[Docker Container]
-    E --> E1[Docker Container]
-    F --> F1[Docker Container]
-    G --> G1[Docker Container]
-    end
-    
-    subgraph "Data Layer"
-    H[PostgreSQL StatefulSet]
-    I[Redis StatefulSet]
-    end
-    
-    D1 --> H
-    E1 --> H
-    F1 --> H
-    G1 --> H
-    H --> I
-    
-    subgraph "Monitoring & Logging"
-    M1[Prometheus]
-    M2[ELK Stack]
-    M3[Alertmanager]
-    end
-    
-    B --> M1
-    B --> M2
-    M1 --> M3
-    
-    J5 --> B
-```
-
 ## Target Audiences
 
 ### Policyholders (B2C)
@@ -164,6 +112,85 @@ flowchart TD
 - Mandatory code reviews before merging
 - CI/CD pipeline validation for all commits
 - Only approved, tested code reaches the main branch
+## Infrastructure Diagram
+
+```code
++--------------------------------------+
+| Google Cloud Platform - Zurich Region|
++--------------------------------------+
+                 |
+                 v
+        +-------------------+
+        | Kubernetes Cluster |
+        +-------------------+
+                 |
+                 v
+       +--------------------------+
+       | Ingress/Load Balancer    |
+       +--------------------------+
+           /        |        |      \
+          v         v        v       v
++----------------+ +----------------+ +------------------+ +------------------+
+| Next.js Web    | | React Native   | | Spring Boot      | | Next.js Monitoring|
+| Portal Pod     | | API Services   | | Dashboard Pod    | | Pod              |
++----------------+ +----------------+ +------------------+ +------------------+
+          |             |              |               |
+          v             v              v               v
++----------------+ +----------------+ +------------------+ +------------------+
+| Docker Container| | Docker Container| | Docker Container | | Docker Container |
++----------------+ +----------------+ +------------------+ +------------------+
+          |             |               |                |
+          v             v               v                v
+  +------------------+ +------------------+ +------------------+ +------------------+
+  | PostgreSQL       | | Redis            | | PostgreSQL       | | Redis            |
+  | StatefulSet      | | StatefulSet      | | StatefulSet      | | StatefulSet      |
+  +------------------+ +------------------+ +------------------+ +------------------+
+          |              |
+          v              v
+  +------------------+  +------------------+
+  | Prometheus       |  | ELK Stack        |
+  +------------------+  +------------------+
+          |               |
+          v               v
+    +-------------------+
+    | Alertmanager      |
+    +-------------------+
+
++--------------------------------------+
+| CI/CD Pipeline                      |
++--------------------------------------+
+          |
+          v
+    +-------------+
+    | Git Repository|
+    +-------------+
+          |
+          v
+    +-------------+
+    | Build & Test |
+    +-------------+
+          |
+          v
+    +-------------------+
+    | Docker Image Creation |
+    +-------------------+
+          |
+          v
+    +------------------+
+    | Image Registry   |
+    +------------------+
+          |
+          v
+    +-----------------------+
+    | Deployment to K8s     |
+    +-----------------------+
+          |
+          v
+    +-------------------+
+    | Kubernetes Cluster |
+    +-------------------+
+
+```
 
 ## MVP Development Checklist
 
